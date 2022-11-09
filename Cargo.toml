@@ -1,0 +1,20 @@
+[package]
+name = "process_alive"
+authors = ["Caido Labs Inc. <dev@caido.io>"]
+description = "Cross platform library to verify if a process is alive"
+license = "MIT"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3.9", features = [
+  "processthreadsapi",
+  "winnt",
+  "handleapi",
+  "minwindef"
+]}
+
+[target.'cfg(target_family = "unix")'.dependencies]
+libc = "^0.2.127"
