@@ -1,3 +1,5 @@
+use std::io::Error;
+
 use libc::kill;
 
 use crate::{Pid, State};
@@ -12,12 +14,12 @@ pub fn state(pid: Pid) -> State {
         if kill(pid, 0) == 0 {
             return State::Alive;
         }
+    }
 
-        let errno = libc::__error();
-        if !errno.is_null() && *errno == libc::ESRCH {
-            State::Dead
-        } else {
-            State::Unknown
-        }
+    let errno = Error::last_os_error().raw_os_error().unwrap();
+    if errno == libc::ESRCH {
+        State::Dead
+    } else {
+        State::Unknown
     }
 }
