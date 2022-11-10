@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use winapi::shared::minwindef::{DWORD, FALSE};
 use winapi::um::handleapi::CloseHandle;
 use winapi::um::processthreadsapi::OpenProcess;
@@ -8,7 +10,7 @@ use crate::Pid;
 pub struct Handle(HANDLE);
 
 impl Handle {
-    fn open(pid: Pid) -> Option<Self> {
+    pub fn open(pid: Pid) -> Option<Self> {
         let handle =
             unsafe { OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid.0 as DWORD) };
         if handle.is_null() {

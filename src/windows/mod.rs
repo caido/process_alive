@@ -1,9 +1,8 @@
 use std::mem::MaybeUninit;
 
-use winapi::shared::minwindef::LPDWORD;
-use winapi::um::handleapi::CloseHandle;
+use winapi::shared::minwindef::FALSE;
 use winapi::um::minwinbase::STILL_ACTIVE;
-use winapi::um::processthreadsapi::{GetExitCodeProcess, OpenProcess};
+use winapi::um::processthreadsapi::GetExitCodeProcess;
 
 use self::handle::Handle;
 use crate::{Pid, State};
@@ -13,19 +12,19 @@ mod handle;
 pub fn state(pid: Pid) -> State {
     let handle = match Handle::open(pid) {
         Some(handle) => handle,
-        None => State::Unknown,
+        None => return State::Unknown,
     };
 
     let mut status = MaybeUninit::uninit();
     unsafe {
-        if !GetExitCodeProcess(*handle, status.as_mut_ptr()) {
-            return Status::Unknown;
+        if GetExitCodeProcess(*handle, status.as_mut_ptr()) == FALSE {
+            return State::Unknown;
         }
 
         if status.assume_init() == STILL_ACTIVE {
-            Status::Alive
+            State::Alive
         } else {
-            Status::Dead
+            State::Dead
         }
     }
 }
