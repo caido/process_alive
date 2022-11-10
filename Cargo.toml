@@ -2,8 +2,9 @@
 name = "process_alive"
 authors = ["Caido Labs Inc. <dev@caido.io>"]
 description = "Cross platform library to verify if a process is alive"
+repository = "https://github.com/caido/process_alive"
 license = "MIT"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
